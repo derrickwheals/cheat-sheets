@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheat Sheets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:  #ffffff;
+    --page:   #e8e8e8;
+    --ink:    #0a0a0a;
+    --ink-2:  #3a3a3a;
+    --ink-3:  #7a7a7a;
+    --line:   #d4d4d4;
+    --accent: #ffd400;
+    --danger: #c8102e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--page); min-height: 100vh; }
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Masthead */
+  header {
+    background: var(--ink);
+    border-bottom: 4px solid var(--accent);
+    padding: 40px 24px 34px;
+  }
+  header .inner { max-width: 920px; margin: 0 auto; }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
+    color: #fff;
+  }
+  header p.lede {
+    margin-top: 14px; font-size: 14.5px; color: #c8c8c8; line-height: 1.6;
+  }
+
+  /* Main */
+  main { max-width: 920px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Status bar */
+  #status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; color: var(--ink-3);
+    margin-bottom: 28px;
+    min-height: 18px;
+  }
+  #status.error { color: var(--danger); }
+
+  /* Grid */
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--accent);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+  .card-thumb {
+    width: 100%; aspect-ratio: 16/10;
+    background: var(--page);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-thumb svg { width: 100%; height: 100%; display: block; }
+  .card-thumb .no-thumb {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--ink-3); letter-spacing: 0.08em;
+  }
+  .card-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .card-name {
+    font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;
+  }
+  .card-file {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--ink-3); margin-top: auto; padding-top: 10px;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--line);
+    pointer-events: none;
+  }
+  .skeleton .card-thumb { background: var(--line); animation: pulse 1.4s ease-in-out infinite; }
+  .skeleton .skel-line {
+    height: 10px; border-radius: 2px;
+    background: var(--line); animation: pulse 1.4s ease-in-out infinite;
+  }
+  .skeleton .skel-line.w60 { width: 60%; }
+  .skeleton .skel-line.w40 { width: 40%; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+  /* Empty state */
+  #empty {
+    display: none;
+    grid-column: 1/-1;
+    padding: 48px 0;
+    text-align: center;
+    font-size: 14px; color: var(--ink-3);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <div class="kicker">Reference Library</div>
+    <h1>Cheat Sheets</h1>
+    <p class="lede">Quick-reference cards for cameras and equipment.</p>
+  </div>
+</header>
+
+<main>
+  <div id="status">Loading&hellip;</div>
+  <div id="grid">
+    <div class="card skeleton">
+      <div class="card-thumb"></div>
+      <div class="card-body" style="gap:10px">
+        <div class="skel-line w60"></div>
+        <div class="skel-line w40"></div>
+      </div>
+    </div>
+    <div class="card skeleton">
+      <div class="card-thumb"></div>
+      <div class="card-body" style="gap:10px">
+        <div class="skel-line w60"></div>
+        <div class="skel-line w40"></div>
+      </div>
+    </div>
+  </div>
+  <div id="empty">No cheat sheets found.</div>
+</main>
+
+<script>
+(async () => {
+  const REPO = 'derrickwheals/d7500-cheat-sheet';
+  const BRANCH = 'main';
+  const API = `https://api.github.com/repos/${REPO}/contents/`;
+  const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/`;
+
+  const statusEl = document.getElementById('status');
+  const gridEl   = document.getElementById('grid');
+  const emptyEl  = document.getElementById('empty');
+
+  const EXCLUDE = new Set(['index.html', 'cheat card design spec.html']);
+
+  function prettify(filename) {
+    return filename
+      .replace(/\.html$/i, '')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\b(\w)/g, c => c.toUpperCase());
+  }
+
+  async function fetchThumb(filename) {
+    try {
+      const res = await fetch(RAW + encodeURIComponent(filename));
+      if (!res.ok) return null;
+      const html = await res.text();
+      const match = html.match(/<div id="__bundler_thumbnail">([\s\S]*?)<\/div>/);
+      if (!match) return null;
+      const svgMatch = match[1].match(/<svg[\s\S]*?<\/svg>/);
+      return svgMatch ? svgMatch[0] : null;
+    } catch { return null; }
+  }
+
+  function makeCard(file, svg) {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = encodeURIComponent(file.name);
+    a.innerHTML = `
+      <div class="card-thumb">
+        ${svg || '<span class="no-thumb">No preview</span>'}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${prettify(file.name)}</div>
+        <div class="card-file">${file.name}</div>
+      </div>`;
+    return a;
+  }
+
+  let files;
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const items = await res.json();
+    files = items.filter(f =>
+      f.type === 'file' &&
+      f.name.toLowerCase().endsWith('.html') &&
+      !EXCLUDE.has(f.name.toLowerCase())
+    );
+  } catch (err) {
+    statusEl.textContent = `Could not load file list: ${err.message}`;
+    statusEl.className = 'error';
+    gridEl.innerHTML = '';
+    return;
+  }
+
+  gridEl.innerHTML = '';
+
+  if (!files.length) {
+    statusEl.textContent = '';
+    emptyEl.style.display = 'block';
+    gridEl.appendChild(emptyEl);
+    return;
+  }
+
+  statusEl.textContent = `${files.length} sheet${files.length !== 1 ? 's' : ''}`;
+
+  // Fetch thumbnails in parallel then render in original order
+  const thumbs = await Promise.all(files.map(f => fetchThumb(f.name)));
+  files.forEach((f, i) => gridEl.appendChild(makeCard(f, thumbs[i])));
+})();
+</script>
+</body>
+</html>
