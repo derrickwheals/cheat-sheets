@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheat Card System — Design Specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:    #ffffff;
+    --page:     #e8e8e8;
+    --ink:      #0a0a0a;
+    --ink-2:    #3a3a3a;
+    --ink-3:    #7a7a7a;
+    --line:     #d4d4d4;
+    --line-2:   #bcbcbc;
+    --accent:   #ffd400;
+    --danger:   #c8102e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--page); }
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ---- Masthead ---- */
+  header.mast {
+    background: var(--ink); color: #fff;
+    border-bottom: 4px solid var(--accent);
+    padding: 40px 24px 34px;
+    margin-bottom: 0;
+  }
+  header.mast .inner { max-width: 920px; margin: 0 auto; }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 14px;
+  }
+  header.mast h1 {
+    font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
+    max-width: 16ch;
+  }
+  header.mast p.lede {
+    margin-top: 16px; font-size: 14.5px; color: #c8c8c8; max-width: 64ch; line-height: 1.6;
+  }
+
+  /* ---- Section ---- */
+  section { margin-top: 44px; }
+  .sec-head {
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: 22px;
+  }
+  .sec-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    background: var(--accent); padding: 2px 8px; border-radius: 2px;
+  }
+  .sec-head h2 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+  .sec-head .sub { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+
+  p.body { font-size: 14px; color: var(--ink-2); max-width: 72ch; margin-bottom: 16px; }
+  p.body b { color: var(--ink); font-weight: 600; }
+
+  .card-note {
+    background: var(--paper); border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    padding: 14px 16px; font-size: 13px; color: var(--ink-2);
+    margin: 18px 0; line-height: 1.6;
+  }
+  .card-note b { color: var(--ink); }
+  .card-note.warn { border-left-color: var(--danger); }
+
+  /* ---- Colour swatches ---- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .sw { background: var(--paper); border: 1px solid var(--line); overflow: hidden; }
+  .sw .chip { height: 78px; border-bottom: 1px solid var(--line); }
+  .sw .meta { padding: 10px 12px; }
+  .sw .nm { font-size: 12.5px; font-weight: 600; }
+  .sw .hex { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .sw .use { font-size: 10.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.45; }
+
+  /* ---- Type scale ---- */
+  .type-row {
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 14px 16px; margin-bottom: 8px;
+    display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+  }
+  .type-row .spec { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-3); width: 240px; flex: 0 0 240px; }
+  .type-row .spec b { color: var(--ink); font-weight: 600; }
+  .type-row .demo { flex: 1; min-width: 200px; }
+
+  /* ---- Anatomy demo card ---- */
+  .demo-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: start; }
+  @media (max-width: 680px) { .demo-grid { grid-template-columns: 1fr; } }
+
+  .spec-card {
+    background: var(--paper); border: 1px solid var(--line);
+    position: relative; overflow: hidden; max-width: 320px;
+  }
+  .spec-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background: var(--accent); z-index:2; }
+  .spec-card .num { position:absolute; top:6px; right:10px; font-family:'IBM Plex Mono',monospace; font-size:9px; color:rgba(255,255,255,0.55); z-index:3; }
+  .spec-card .head { background: var(--ink); color:#fff; display:flex; align-items:center; gap:10px; padding:8px 36px 8px 14px; border-bottom:2px solid var(--accent); }
+  .spec-card .ic { width:22px; height:22px; color:var(--accent); flex:0 0 22px; }
+  .spec-card .ic svg { width:100%; height:100%; }
+  .spec-card .cat { font-family:'IBM Plex Mono',monospace; font-size:8.5px; font-weight:600; color:var(--accent); letter-spacing:0.14em; text-transform:uppercase; }
+  .spec-card .ttl { font-size:13.5px; font-weight:600; color:#fff; line-height:1.15; }
+  .spec-card .rows { display:grid; grid-template-columns:64px 1fr; column-gap:10px; row-gap:2.5px; padding:10px 12px 0 14px; }
+  .spec-card .rows .l { font-size:8.5px; font-weight:600; color:var(--ink-3); letter-spacing:0.08em; text-transform:uppercase; padding-top:2px; }
+  .spec-card .rows .v { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink); }
+  .spec-card .rows .v b { font-weight:600; }
+  .spec-card .rows .v .on { background:var(--accent); color:var(--ink); font-weight:600; padding:0 4px; border-radius:1px; }
+  .spec-card .rows .v .off { color:var(--danger); font-weight:600; }
+  .spec-card .tip { margin:8px 12px 10px 14px; padding-top:7px; border-top:1px solid var(--line); font-size:9.5px; color:var(--ink-2); line-height:1.4; }
+  .spec-card .tip::before { content:"▸ "; color:var(--ink); font-weight:700; }
+  .spec-card .tip b { color:var(--ink); font-weight:600; }
+
+  /* inverted reference variant */
+  .spec-card.ref { background:var(--ink); border-color:var(--ink); }
+  .spec-card.ref::before { background:var(--danger); }
+  .spec-card.ref .head { background:transparent; border-bottom:1px solid #2a2a2a; }
+  .spec-card.ref .rows .l { color:#888; }
+  .spec-card.ref .rows .v { color:#f2f2f2; }
+  .spec-card.ref .rows .v b { color:var(--accent); }
+  .spec-card.ref .tip { color:#b8b8b8; border-top-color:#2a2a2a; }
+  .spec-card.ref .tip::before { color:var(--accent); }
+  .spec-card.ref .tip b { color:#fff; }
+
+  .callouts { font-size:12.5px; color:var(--ink-2); }
+  .callouts li { margin-bottom:11px; padding-left:18px; position:relative; line-height:1.5; list-style:none; }
+  .callouts li::before { content:""; position:absolute; left:0; top:6px; width:8px; height:8px; background:var(--accent); }
+  .callouts li b { color:var(--ink); }
+
+  /* ---- Icon grid ---- */
+  .icons { display:grid; grid-template-columns:repeat(auto-fill, minmax(110px,1fr)); gap:12px; }
+  .icon-cell { background:var(--paper); border:1px solid var(--line); padding:14px 10px; text-align:center; }
+  .icon-cell .box { width:34px; height:34px; margin:0 auto 9px; color:var(--ink); }
+  .icon-cell .box svg { width:100%; height:100%; }
+  .icon-cell .lbl { font-size:10.5px; font-weight:600; }
+  .icon-cell .desc { font-family:'IBM Plex Mono',monospace; font-size:8.5px; color:var(--ink-3); margin-top:3px; line-height:1.3; }
+
+  /* ---- Spec tables ---- */
+  table.spec { width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); font-size:12.5px; }
+  table.spec th { text-align:left; background:var(--ink); color:#fff; font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:9px 12px; }
+  table.spec td { padding:9px 12px; border-top:1px solid var(--line); color:var(--ink-2); vertical-align:top; }
+  table.spec td:first-child { font-weight:600; color:var(--ink); width:34%; }
+  table.spec td.mono, table.spec .mono { font-family:'IBM Plex Mono',monospace; font-size:11.5px; }
+
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  @media (max-width:680px){ .two-col{ grid-template-columns:1fr; } }
+
+  footer.foot { margin-top:54px; padding-top:18px; border-top:2px solid var(--ink); font-size:11.5px; color:var(--ink-3); font-family:'IBM Plex Mono',monospace; }
+
+  @media print {
+    @page { size: A4 portrait; margin: 16mm 14mm; }
+    html, body { background:#fff; }
+    header.mast { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .spec-card, table.spec th, .sec-num, .sw .chip, .icon-cell .box, .spec-card .head, .on { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="g-mtn" viewBox="0 0 24 24"><polygon points="3,20 10,8 14,14 17,10 21,20" fill="currentColor"/></symbol>
+  <symbol id="g-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="7" y2="7"/><line x1="17" y1="17" x2="19" y2="19"/><line x1="5" y1="19" x2="7" y2="17"/><line x1="17" y1="7" x2="19" y2="5"/></g></symbol>
+  <symbol id="g-cloud" viewBox="0 0 24 24"><circle cx="9" cy="13" r="5" fill="currentColor"/><circle cx="15" cy="11" r="5" fill="currentColor"/><rect x="5" y="15" width="15" height="3" fill="currentColor"/></symbol>
+  <symbol id="g-moon" viewBox="0 0 24 24"><path d="M19 14 A8 8 0 1 1 11 4 A6 6 0 0 0 19 14 Z" fill="currentColor"/></symbol>
+  <symbol id="g-portrait" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M3 21 A9 9 0 0 1 21 21 Z" fill="currentColor"/></symbol>
+  <symbol id="g-macro" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="g-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><g fill="currentColor"><rect x="11" y="2" width="2" height="3"/><rect x="11" y="19" width="2" height="3"/><rect x="2" y="11" width="3" height="2"/><rect x="19" y="11" width="3" height="2"/></g></symbol>
+  <symbol id="g-ap" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><polygon points="12,3 19.5,7.5 19.5,16.5 12,21 4.5,16.5 4.5,7.5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+</defs></svg>
+
+<header class="mast">
+  <div class="inner">
+    <div class="kicker">Design Specification · Handoff</div>
+    <h1>Quick-Reference Cheat Card System</h1>
+    <p class="lede">A complete visual language for compact, dual-purpose reference cards: legible on a phone screen and printable at 8 cards per A4 sheet. This document defines colour, type, layout, iconography, and the card anatomy. It is gear-agnostic — apply it to any subject by swapping the content, not the design.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 00 PRINCIPLES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">00</span><h2>Design Principles</h2></div>
+    <p class="body">Five rules govern every decision below. When a choice is ambiguous, defer to these.</p>
+    <ul class="callouts">
+      <li><b>Dual-purpose, single source.</b> One layout must work as a phone-scrollable list and as a print sheet. Design the card; the page is just a grid of cards.</li>
+      <li><b>Legibility first.</b> Cards are read fast, often small and printed. Monospace for all data values; generous weight contrast; never rely on colour alone to carry meaning.</li>
+      <li><b>Colour with intent.</b> A near-monochrome base (black / white / grey) with <b>one</b> brand accent. A second alert colour is rationed to a single semantic job.</li>
+      <li><b>Structure over decoration.</b> No gradients, no shadows, no rounded "app" corners. Flat blocks, hard rules, and a bold edge marker.</li>
+      <li><b>Systematic variety.</b> Distinguish card <i>types</i> (e.g. scenario vs. universal reference) by inverting the same system — not by inventing a new one.</li>
+    </ul>
+  </section>
+
+  <!-- 01 COLOUR -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Colour Palette</h2><span class="sub">Black · White · Yellow · Grey · Red</span></div>
+    <p class="body">A high-contrast, equipment-inspired palette. <b>Black and white</b> do the structural work; <b>yellow</b> is the single brand accent; <b>grey</b> is for hierarchy and secondary text; <b>red</b> is rationed.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0a0a0a"></div><div class="meta"><div class="nm">Ink / Black</div><div class="hex">#0A0A0A</div><div class="use">Card headers, body of reference cards, primary text, hard rules.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#ffffff;box-shadow:inset 0 0 0 1px #d4d4d4"></div><div class="meta"><div class="nm">Paper / White</div><div class="hex">#FFFFFF</div><div class="use">Scenario card body. Keeps printed ink low and text crisp.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#ffd400"></div><div class="meta"><div class="nm">Accent / Yellow</div><div class="hex">#FFD400</div><div class="use">Brand accent only: left edge, header underline, category labels, "ON" highlight, icons on dark.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#e8e8e8"></div><div class="meta"><div class="nm">Page</div><div class="hex">#E8E8E8</div><div class="use">Screen background behind cards. Never printed.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#3a3a3a"></div><div class="meta"><div class="nm">Ink-2</div><div class="hex">#3A3A3A</div><div class="use">Body copy, tip text.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#7a7a7a"></div><div class="meta"><div class="nm">Ink-3 / Grey</div><div class="hex">#7A7A7A</div><div class="use">Field labels, card numbers, captions, metadata.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#d4d4d4"></div><div class="meta"><div class="nm">Line</div><div class="hex">#D4D4D4</div><div class="use">Card borders, internal divider rules.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#c8102e"></div><div class="meta"><div class="nm">Danger / Red</div><div class="hex">#C8102E</div><div class="use">Rationed. One job only: negative/alert flags ("OFF") and the reference-card edge wedge. Never decorative.</div></div></div>
+    </div>
+    <div class="card-note warn"><b>Red discipline:</b> red appears on a card a maximum of once or twice, and always means "the thing to switch off / watch out for." If it starts decorating the layout, it has failed. Everything else is black, white, grey, or yellow.</div>
+  </section>
+
+  <!-- 02 TYPOGRAPHY -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Typography</h2><span class="sub">IBM Plex Sans + IBM Plex Mono</span></div>
+    <p class="body"><b>IBM Plex Sans</b> for titles and prose; <b>IBM Plex Mono</b> for all data values, labels, and numbers. The mono face makes settings scannable and aligns columns. Both are free (Google Fonts / SIL OFL) and render cleanly on iOS Safari at small sizes.</p>
+    <div class="type-row"><div class="spec"><b>Card title</b> · Plex Sans · 600 · 13.5px / -0.5%</div><div class="demo" style="font-size:13.5px;font-weight:600;letter-spacing:-0.005em;">Golden Hour / Sunset</div></div>
+    <div class="type-row"><div class="spec"><b>Category label</b> · Plex Mono · 600 · 8.5px · 0.14em · UPPER</div><div class="demo mono" style="font-size:8.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9a7a00;">Landscape</div></div>
+    <div class="type-row"><div class="spec"><b>Field label</b> · Plex Sans · 600 · 8.5px · 0.08em · UPPER · grey</div><div class="demo" style="font-size:8.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#7a7a7a;">Aperture</div></div>
+    <div class="type-row"><div class="spec"><b>Data value</b> · Plex Mono · 400/600 · 10px</div><div class="demo mono" style="font-size:10px;">f/8 – f/11 · <b style="font-weight:600;">ISO 100</b></div></div>
+    <div class="type-row"><div class="spec"><b>Tip / note</b> · Plex Sans · 400 · 9.5px · ink-2</div><div class="demo" style="font-size:9.5px;color:#3a3a3a;">▸ Shoot RAW — the light shifts fast.</div></div>
+    <div class="type-row"><div class="spec"><b>Card number</b> · Plex Mono · 500 · 9px</div><div class="demo mono" style="font-size:9px;color:#7a7a7a;">01 / 16</div></div>
+    <div class="card-note"><b>Scale floor:</b> on screen nothing below ~9px; in print nothing below <b>5.5pt</b> for labels / <b>7pt</b> for values. If content won't fit, cut content — never shrink past the floor.</div>
+  </section>
+
+  <!-- 03 CARD ANATOMY -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Card Anatomy</h2></div>
+    <p class="body">Every card is the same five-part structure. Build it once as a component and repeat.</p>
+    <div class="demo-grid">
+      <div>
+        <div class="spec-card">
+          <span class="num">03 / 16</span>
+          <div class="head">
+            <span class="ic"><svg><use href="#g-sun"/></svg></span>
+            <div><div class="cat">Category</div><div class="ttl">Scenario Title</div></div>
+          </div>
+          <div class="rows">
+            <span class="l">Field</span><span class="v"><b>Primary value</b></span>
+            <span class="l">Field</span><span class="v">secondary value</span>
+            <span class="l">Toggle</span><span class="v"><span class="on">ON</span> · qualifier</span>
+            <span class="l">Toggle</span><span class="v"><span class="off">OFF</span></span>
+            <span class="l">Range</span><span class="v">18 – 35</span>
+          </div>
+          <p class="tip">Short actionable note with one <b>bold</b> keyword.</p>
+        </div>
+      </div>
+      <div>
+        <ul class="callouts">
+          <li><b>Edge marker (5px).</b> Full-height bar on the left. Yellow for standard cards, red for reference cards. The instant type-identifier.</li>
+          <li><b>Black header band.</b> Icon + category label (yellow) + title (white), underlined by a 2px yellow rule. The card number sits top-right, faint.</li>
+          <li><b>Data rows.</b> A two-column grid: fixed-width grey uppercase <b>label</b> (≈64px) and a monospace <b>value</b>. Row gap is tight (2.5px). Bold the value that matters most.</li>
+          <li><b>Flag tokens.</b> <span class="mono" style="background:#ffd400;padding:0 4px;font-size:11px;">ON</span> = yellow chip; <span class="mono" style="color:#c8102e;font-weight:600;">OFF</span> = red text. The only in-data colour.</li>
+          <li><b>Tip footer.</b> Divider rule, then one short note prefixed with a ▸ marker. Optional but encouraged — max one line or two.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 CARD VARIANTS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Card Variants</h2></div>
+    <p class="body">Use exactly two variants. Differentiate card <i>families</i> by inverting the base system — do not introduce new colours or layouts.</p>
+    <div class="two-col">
+      <div>
+        <div class="spec-card" style="max-width:none;">
+          <span class="num">01 / 16</span>
+          <div class="head"><span class="ic"><svg><use href="#g-mtn"/></svg></span><div><div class="cat">Standard</div><div class="ttl">Scenario Card</div></div></div>
+          <div class="rows"><span class="l">Body</span><span class="v">white</span><span class="l">Edge</span><span class="v"><b>yellow</b></span><span class="l">Use</span><span class="v">individual scenarios</span></div>
+          <p class="tip">Low ink, high legibility. The default.</p>
+        </div>
+      </div>
+      <div>
+        <div class="spec-card ref" style="max-width:none;">
+          <span class="num">16 / 16</span>
+          <div class="head"><span class="ic"><svg><use href="#g-gear"/></svg></span><div><div class="cat">Inverted</div><div class="ttl">Reference Card</div></div></div>
+          <div class="rows"><span class="l">Body</span><span class="v">black</span><span class="l">Edge</span><span class="v"><b>red</b></span><span class="l">Use</span><span class="v">universal / always-on info</span></div>
+          <p class="tip">Reads as a different object on the sheet.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-note">Group reference / summary cards <b>last</b> in the set so they fall together on the final print page.</div>
+  </section>
+
+  <!-- 05 ICONOGRAPHY -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Iconography</h2></div>
+    <p class="body">One icon per card, top-left of the header. Build them from <b>geometric primitives only</b> — circles, triangles, rectangles, arcs. Flat fill in <b>currentColor</b> (yellow on the dark header). No outlines-plus-fill mixing unless the shape needs it, no detail, no perspective. A 24×24 viewBox, rendered ~22px. The goal is instant silhouette recognition at thumbnail size, not illustration.</p>
+    <div class="icons">
+      <div class="icon-cell"><div class="box"><svg><use href="#g-mtn"/></svg></div><div class="lbl">Triangle</div><div class="desc">peak / landscape</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-sun"/></svg></div><div class="lbl">Disc + rays</div><div class="desc">bright / daylight</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-cloud"/></svg></div><div class="lbl">Stacked circles</div><div class="desc">soft / overcast</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-moon"/></svg></div><div class="lbl">Crescent</div><div class="desc">low light</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-portrait"/></svg></div><div class="lbl">Circle + arc</div><div class="desc">subject / person</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-macro"/></svg></div><div class="lbl">Concentric</div><div class="desc">close / detail</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-ap"/></svg></div><div class="lbl">Ring + polygon</div><div class="desc">technical ref</div></div>
+      <div class="icon-cell"><div class="box"><svg><use href="#g-gear"/></svg></div><div class="lbl">Gear</div><div class="desc">setup / system</div></div>
+    </div>
+    <div class="card-note"><b>Rule of thumb:</b> if an icon needs more than ~4 primitive shapes to read, simplify the concept. Distinguish bright vs. dim, wide vs. close, subject vs. scene — not literal objects.</div>
+  </section>
+
+  <!-- 06 LAYOUT & GRID -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Layout &amp; Grid</h2></div>
+    <div class="two-col">
+      <div>
+        <table class="spec">
+          <tr><th>Screen (phone)</th><th></th></tr>
+          <tr><td>Columns</td><td class="mono">1 (≤640px) → 2 (≥640px)</td></tr>
+          <tr><td>Max width</td><td class="mono">760–880px, centred</td></tr>
+          <tr><td>Gap</td><td class="mono">12–14px</td></tr>
+          <tr><td>Background</td><td class="mono">#E8E8E8 page</td></tr>
+          <tr><td>Header</td><td>sticky black bar, yellow underline, Print button</td></tr>
+          <tr><td>Safe areas</td><td class="mono">env(safe-area-inset-*)</td></tr>
+        </table>
+      </div>
+      <div>
+        <table class="spec">
+          <tr><th>Print (A4 portrait)</th><th></th></tr>
+          <tr><td>Grid</td><td class="mono">2 cols × 4 rows = 8 / page</td></tr>
+          <tr><td>Page margin</td><td class="mono">7mm</td></tr>
+          <tr><td>Card size</td><td class="mono">≈95 × 67.5 mm</td></tr>
+          <tr><td>Gap</td><td class="mono">2.5mm</td></tr>
+          <tr><td>Colour</td><td class="mono">print-color-adjust: exact</td></tr>
+          <tr><td>Chrome</td><td>hide header, intro, footer</td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="body" style="margin-top:18px;">Design the card to a <b>fixed print height</b> (≈67.5mm) and let content fit within it — overflow hidden. The same card markup simply reflows from a scrolling column on screen to a fixed grid in print via a <span class="mono">@media print</span> block and <span class="mono">@page</span> rule. Force a page break after every 8th card.</p>
+    <div class="card-note"><b>Count to the page:</b> size the set to a multiple of 8 so print pages are full (e.g. 16 cards = 2 clean A4 sheets). Put reference cards at the end to fill the last page.</div>
+  </section>
+
+  <!-- 07 DELIVERY -->
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Build &amp; Delivery</h2></div>
+    <ul class="callouts">
+      <li><b>Single HTML file.</b> One self-contained document, no build step. Inline the CSS in a <span class="mono">&lt;style&gt;</span> block.</li>
+      <li><b>Two render targets in one file.</b> Screen styles + a <span class="mono">@media print</span> / <span class="mono">@page A4</span> block. Test both before handoff.</li>
+      <li><b>iOS Safari first.</b> Include <span class="mono">viewport-fit=cover</span>, <span class="mono">apple-mobile-web-app-capable</span>, and safe-area insets. A sticky "Print A4" button is the only interactive element.</li>
+      <li><b>Offline option.</b> For field use, embed the fonts so the file is fully self-contained and needs no network.</li>
+      <li><b>Icons as inline SVG <span class="mono">&lt;symbol&gt;</span>.</b> Define once in a hidden defs block, reference with <span class="mono">&lt;use&gt;</span>. Keeps the file small and recolourable.</li>
+      <li><b>Canonical HTML.</b> One <span class="mono">&lt;article class="card"&gt;</span> per card; semantic structure so content is easy to edit later.</li>
+    </ul>
+  </section>
+
+  <footer class="foot">
+    Cheat Card System — Design Specification · v1 · Gear-agnostic. Swap content, keep the system.<br>
+    Typefaces: IBM Plex Sans &amp; IBM Plex Mono (SIL Open Font License). Palette: #0A0A0A · #FFFFFF · #FFD400 · #7A7A7A · #C8102E.
+  </footer>
+
+</div>
+</body>
+</html>
