@@ -173,12 +173,13 @@
 
   function prettify(filename) {
     return filename
-      .replace(/\.html$/i, '')
+      .replace(/\.(html|pdf)$/i, '')
       .replace(/[_-]+/g, ' ')
       .replace(/\b(\w)/g, c => c.toUpperCase());
   }
 
   async function fetchThumb(filename) {
+    if (!filename.toLowerCase().endsWith('.html')) return null;
     try {
       const res = await fetch(RAW + encodeURIComponent(filename));
       if (!res.ok) return null;
@@ -212,7 +213,7 @@
     const items = await res.json();
     files = items.filter(f =>
       f.type === 'file' &&
-      f.name.toLowerCase().endsWith('.html') &&
+      (f.name.toLowerCase().endsWith('.html') || f.name.toLowerCase().endsWith('.pdf')) &&
       !EXCLUDE.has(f.name.toLowerCase())
     );
   } catch (err) {
