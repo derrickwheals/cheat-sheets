@@ -2,7 +2,7 @@
 
 **For:** Derrick's kit — D7500 (DX) · 18–105mm f/3.5–5.6 · 70–300mm f/4.5–5.6 · Tamron 90mm f/2.8 Macro · **AF-S DX 35mm f/1.8G** · SmallRig tripod · ML-L3 infrared remote · **NEEWER TC-2 (MC-DC2) wired timer remote** · 67mm UV + polarising filters.
 
-**For the designer:** Each card below uses the **same field structure** so they can be templated 1:1. Fields are: *When to use · Best lens · Mode & drive · Settings · Stability · Filters · Gotchas · Expert tip · Worth adding*. Card boundaries are marked with `=== CARD N ===` and a horizontal rule. A non-numbered **Global Setup** panel precedes Card 1 (marked `=== SETUP CARD ===`) — design it as a distinct "set once" tile, visually separate from the 13 scenario cards. A second non-numbered panel, the **TC-2 Remote** reference (marked `=== ACCESSORY CARD ===`), follows Card 13 — it does *not* use the scenario field structure; treat it as its own tool-reference tile. Manual page references are cited as `(Manual p.XXX)` and point to the D7500 Reference Manual.
+**For the designer:** Each card below uses the **same field structure** so they can be templated 1:1. Fields are: *When to use · Best lens · Mode & drive · Settings · Stability · Filters · Gotchas · Expert tip · Worth adding*. Card boundaries are marked with `=== CARD N ===` and a horizontal rule. The deck now runs to **14** scenario cards; Card 14 (Group Photos) is thematically a sibling of Card 11 (Portraits) and may be placed adjacent to it in the printed order. A non-numbered **Global Setup** panel precedes Card 1 (marked `=== SETUP CARD ===`) — design it as a distinct "set once" tile, visually separate from the 14 scenario cards. A second non-numbered panel, the **TC-2 Remote** reference (marked `=== ACCESSORY CARD ===`), follows Card 14 — it does *not* use the scenario field structure; treat it as its own tool-reference tile. Manual page references are cited as `(Manual p.XXX)` and point to the D7500 Reference Manual.
 
 > **Two things to read once, so they're not repeated on every card:**
 > 1. **Your AF-S DX 35mm f/1.8G is now your low-light / indoor / street workhorse** (52mm-equiv, ~2.6 stops faster than the zoom at the same framing). It's the *primary* lens on **Card 4 (Low Light)** and **Card 13 (Street)**, and a strong second option for indoor action and environmental portraits. What it *can't* fix: the 18–105's slow aperture still limits the **wide** end (a fast 14–16mm ultra-wide remains the real astro/landscape upgrade), and you still have no fast **reach** for wildlife. Note it has **no VR** — mind your shutter floor handheld. [Ken Rockwell 35mm f/1.8G review](https://www.kenrockwell.com/nikon/35mm-f18-dx.htm)
@@ -364,12 +364,12 @@
 
 **When to use:** People — headshots, environmental portraits, couples.
 
-**Best lens:** **Tamron 90mm f/2.8** for flattering head-and-shoulders (135mm-equiv compression, lovely blur) · **35mm f/1.8G** for **environmental / full-body / tight-room / small-group** portraits (52mm-equiv, f/1.8 separation). Use **18–105mm @ 50–85mm** only when you need zoom flexibility.
+**Best lens:** **Tamron 90mm f/2.8** for flattering head-and-shoulders (135mm-equiv compression, lovely blur) · **35mm f/1.8G** for **environmental / full-body / tight-room** portraits (52mm-equiv, f/1.8 separation). Use **18–105mm @ 50–85mm** only when you need zoom flexibility. *(Groups → Card 14.)*
 
 **Mode & drive:** **A** · Single frame (Qc for candids). *(Manual p.86)*
 
 **Settings:**
-- **Aperture:** f/2.8–f/4 for one person (subject separation) · f/5.6–f/8 for groups (everyone sharp).
+- **Aperture:** f/2.8–f/4 for one person (subject separation). **➡️ For groups, use Card 14** — group shots invert most of this card (deeper aperture, wider lens, burst, front-row focus).
 - **ISO:** Auto / 100.
 - **Shutter:** ≥ 1/200 handheld (freezes subject *and* beats 90mm shake).
 - **AF:** **AF-S single-point on the near eye** · AF-C + face detection for moving subjects. *(Manual p.100, p.103)*
@@ -453,6 +453,64 @@
 **Worth adding:**
 - **Wrist strap / half-case** for fast, low-profile carry.
 - Nothing optical needed — this scenario is exactly what your 35mm delivers.
+
+---
+
+=== CARD 14 ===
+## 👨‍👩‍👧 Group Photos (family, indoor & outdoor)
+
+**When to use:** Family gatherings, group shots, "everyone get together" moments. **Not the same as Card 11 (Portraits)** — that card blurs the background; this one keeps *everyone* sharp. Almost every setting inverts.
+
+**Best lens:** **35mm f/1.8G** for small groups (2–6) with room to back up — correct focal length, slightly better glass at f/5.6–f/8, lighter. **Switch to the 18–105mm the moment you can't back up far enough** — typically indoors, or groups of 8+. You'll need **24–28mm**, and the prime physically can't go there. *"Step back" isn't an option when there's a wall behind you.*
+
+⚠️ **Focal length is the whole ballgame here:**
+
+| Focal (DX) | Equiv | Verdict for faces |
+|---|---|---|
+| **≥ 35mm** | ≥ 52mm | ✅ Safe — no distortion concern |
+| **24–35mm** | 36–52mm | ⚠️ OK — keep faces away from the frame edges |
+| **< 24mm** | < 36mm | ❌ Visible edge stretch |
+| **18mm** | 27mm | ❌❌ Rugby-ball heads in the corners |
+
+**Mode & drive:** **A** · **CL (continuous low, ~3 fps)** — *always shoot 3–5 frames.* Someone always blinks. *(Manual p.86)*
+
+**Settings:**
+- **Aperture:** **f/5.6** (one row) · **f/8** (two+ rows / staggered depth). Deep enough for everyone, still inside the lens's sweet spot. Don't go wide open — you'll lose the back row.
+- **Shutter:** **≥ 1/125.** ⚠️ **VR does not help here** — it fixes *camera* shake, not *toddler* shake. 1/125 is a people floor, not a lens floor.
+- **Focus:** **AF-S single point on the front row's eyes** (or ⅓ into the group's depth if there are several rows). Depth of field extends ~⅔ behind the focus point — focusing on the back row wastes it.
+- **Metering:** Matrix. **WB:** Auto (fix in RAW) — but see the indoor mixed-light gotcha.
+
+**🌳 Outdoor light:**
+- **Open shade or overcast is your friend.** Direct midday sun = squinting, raccoon eyes, blown foreheads.
+- **Don't put the sun behind them** without fill — you'll get silhouettes. If you must, add flash as fill or expose for faces and rescue the sky in RAW.
+- Golden hour: put the sun **behind and to one side**, expose for faces.
+
+**🏠 Indoor light:**
+- **Window light is better than your flash.** Place the group *facing* the window, you between them and it. Backs to the window = silhouettes.
+- **If you must use the pop-up flash:** dial **flash compensation to −0.7 EV** to soften it, and **remove the lens hood and any stacked filters** — at wide focal lengths they cast a semicircular shadow into the bottom of the frame.
+- **Flash sync caps at 1/250** *(e1, Manual p.265)* — the shutter can't go faster with flash.
+- ISO **1600–3200** with no flash is usually the better trade than harsh frontal light.
+
+**📸 Getting yourself in the shot — use Custom Setting c3, not a remote:**
+**Self-timer** *(c3, Manual p.263)* sets **delay + number of shots + interval**. Set **delay 10–20 s**, **number of shots 3–5**, **interval 1–2 s**, press the shutter, walk into frame. You get blink insurance *and* you're in the photo, hands-free. Neither the ML-L3 nor the TC-2 does this better.
+*(ML-L3 is the alternative if you want to trigger it from in-frame — but it fires **single frames only**, so no blink insurance.)*
+
+**Stability:** Handheld is fine at 1/125. **Tripod for the self-timer shots** — otherwise you're handing the camera to someone who doesn't know your settings.
+
+**Filters:** Polariser **off** — it costs ~2 stops you can't spare indoors, and darkens skin unevenly. UV optional.
+
+**Gotchas:**
+- **18mm ruins faces at the edges.** The single most-botched thing in family group photos. Back up, zoom to 24mm+, and put faces away from the corners.
+- **f/2.8 will not keep two rows sharp.** Groups are a depth problem, not a bokeh problem.
+- **Focusing on the back row** throws away most of your depth of field. Front row, always.
+- **Someone always blinks.** If you shot one frame, you shot zero.
+- **Mixed light indoors** (window + tungsten + your flash) makes skin tones un-fixable even in RAW. Kill the room lights, or commit to one source.
+
+**Expert tip:** Stagger heights (kneel the front row, stand the back), tuck people **shoulder-to-shoulder** to compress group depth — a shallow group needs less DOF, which buys back a stop of light. Then shoot **five frames** and pick the one where everyone's eyes are open. [Nikon — Tips & Techniques](https://www.nikonusa.com/learn-and-explore/c/tips-and-techniques)
+
+**Worth adding:**
+- **Speedlight (e.g. SB-700) — this is the real gap.** ⚠️ The pop-up flash is your weakest link, and *family group shots recur constantly*. A bounced speedlight transforms indoor groups more than any lens you could buy. **This is the strongest evidence-based purchase case in the whole deck.**
+- **Reflector** (5-in-1, ~$30) for outdoor fill — cheap, and fixes backlit groups without flash.
 
 ---
 
